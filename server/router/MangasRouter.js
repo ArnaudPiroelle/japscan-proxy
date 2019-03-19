@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs')
 const path = require('path')
 const fsPromises = fs.promises;
-const japScanApiService = require('../../api/JapScanApiService')
+const japScanApiService = require('../../core/api/JapScanApiService')
 const mangaStore = require('../../store/MangaStore')
 
 

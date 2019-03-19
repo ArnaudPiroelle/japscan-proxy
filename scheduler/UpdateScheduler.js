@@ -1,7 +1,7 @@
 const schedule = require('node-schedule');
 const sequential = require('promise-sequential');
 
-const japScanApiService = require('../api/JapScanApiService')
+const japScanApiService = require('../core/api/JapScanApiService')
 const mangaStore = require('../store/MangaStore')
 
 module.exports = class UpdateScheduler {
@@ -12,7 +12,7 @@ module.exports = class UpdateScheduler {
     registerMangasSync() {
         let self = this
         return self.fetchMangas()
-            .then(res =>{
+            .then(res => {
                 self.mangasSync = schedule.scheduleJob('0 * * * *', self.fetchMangas);
             })
     }
@@ -38,8 +38,9 @@ module.exports = class UpdateScheduler {
                 return pages
             })
             .then(pages => {
-                let promises = pages.map(index => { return () => japScanApiService.getMangas(index).then(res => { mangaStore.addMangas(res) }) })
-                return sequential(promises).catch(error => console.log(error))
+                let promises = pages.map(index => { return () => japScanApiService.getMangas(index).then(res => mangaStore.addMangas(res)) })
+                return sequential(promises)
             })
+            .catch(e => console.log(e))
     }
 }

@@ -52,20 +52,12 @@ class JapScanApiService {
 
     doRequest(method, url, encoding) {
         let self = this
-        return new Promise((resolve, reject) => {
-            let options = {
-                method,
-                url,
-                encoding
-            }
-            self.scraper.request(options, (error, response, body) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    resolve(body)
-                }
-            })
-        })
+        let options = {
+            method,
+            url,
+            encoding
+        }
+        return self.scraper(options)
     }
 
     parseHtml(body) {
@@ -131,9 +123,8 @@ class JapScanApiService {
     }
 
     parseChapters($) {
-        let chapterElements = $('#chapters_list>div>div')
-        let result = chapterElements.map((i, chapter) => {
-            let link = $(chapter).children('a[href^="/lecture-en-ligne/"]')
+        let chapterElements = $('#chapters_list>div>div>a[href^="/lecture-en-ligne/"]').not(':has(span)')
+        let result = chapterElements.map((i, link) => {
             let url = $(link).attr('href')
             let name = $(link).text().trim()
             let uri = url.split('/')
