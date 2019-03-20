@@ -147,7 +147,7 @@ class JapScanApiService {
         var image = $('#image')
         let src = image.data("src")
 
-        let isSecuredPage = $('script[src^="/js/iYFbYi.js"]')
+        let isSecuredPage = $('script[src^="/js/iYFbYi_UibMqYb.js"]')
         let uri = src.replace('https://c.japscan.to/lel/', '').split('/')
 
         let pages = pagesElements
