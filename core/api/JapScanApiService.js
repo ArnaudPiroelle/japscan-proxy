@@ -42,7 +42,7 @@ class JapScanApiService {
     }
 
     getPage(manga, chapter, page, secured) {
-        let baseUrl = secured ? 'https://c.japscan.to/clel/' : 'https://c.japscan.to/lel/'
+        let baseUrl = 'https://c.japscan.to/lel/'
         return this.doRequest('GET', baseUrl + manga + "/" + chapter + "/" + page, null)
     }
 
@@ -153,7 +153,7 @@ class JapScanApiService {
         let pages = pagesElements
             .map((i, page) => {
                 let imageName = $(page).data('img')
-                return "/images" + (isSecuredPage ? "-secured/" : "/") + uri[0] + "/" + uri[1] + "/" + imageName
+                return "/images/" + uri[0] + "/" + uri[1] + "/" + imageName
             }).get()
 
         return {
