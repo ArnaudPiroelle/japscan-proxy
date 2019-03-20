@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
-    "cloudscraper": "https://github.com/codemanki/cloudscraper#3.1.0",
+    "cloudscraper": "https://github.com/codemanki/cloudscraper#master",
     "compression": "^1.7.3",
     "express": "^4.16.4",
     "helmet": "^3.15.1",
