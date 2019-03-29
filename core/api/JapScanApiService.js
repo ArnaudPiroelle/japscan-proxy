@@ -1,5 +1,5 @@
-const cloudscraper = require('cloudscraper');
-const cheerio = require('cheerio');
+const cloudscraper = require('cloudscraper')
+const cheerio = require('cheerio')
 
 class JapScanApiService {
     constructor(scraper) {
@@ -50,11 +50,14 @@ class JapScanApiService {
         return this.doRequest('GET', url, 'utf8')
     }
 
-    doRequest(method, url, encoding) {
+    doRequest(method, uri, encoding) {
         let self = this
         let options = {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
+            },
             method,
-            url,
+            uri,
             encoding
         }
         return self.scraper(options)
@@ -125,14 +128,31 @@ class JapScanApiService {
     parseChapters($) {
         let chapterElements = $('#chapters_list>div>div>a[href^="/lecture-en-ligne/"]').not(':has(span)')
         let result = chapterElements.map((i, link) => {
+            let volumeElement = $(link).parent().parent()
+            let volumeElementId = volumeElement.attr('id')
+            let volumeName = $(`span[data-target="#${volumeElementId}"]`).text().trim()
+
+
             let url = $(link).attr('href')
             let name = $(link).text().trim()
+
             let uri = url.split('/')
             let manga = uri[2]
             let number = uri[3]
 
+            let volumeRegex = /volume-([0-9]+)/g
+            let chapterRegex = /([^:]*)( : .*)?/
+            let isVolume = volumeRegex.test(number)
+
+            let cleanName = name
+            if (isVolume) {
+                cleanName = volumeName
+            } else {
+                cleanName = name.replace(chapterRegex, `Chap. ${number}$2`)
+            }
+
             return {
-                name,
+                name: cleanName,
                 manga,
                 number
             }
