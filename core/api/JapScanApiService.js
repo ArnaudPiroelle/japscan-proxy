@@ -182,7 +182,15 @@ class JapScanApiService {
         let pages = pagesElements
             .map((i, page) => {
                 let imageName = $(page).data('img')
-                return "/images/" + uri[0] + "/" + uri[1] + "/" + imageName
+                let index = imageName.indexOf('?')
+                if (index <= 0){
+                    return "/images/" + uri[0] + "/" + uri[1] + "/" + imageName
+                } else {
+                    let cleanImageName = imageName.substring(0, index)
+                    return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
+                }
+                
+                return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
             }).get()
 
         return {
