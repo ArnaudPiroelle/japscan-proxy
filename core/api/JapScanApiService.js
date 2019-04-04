@@ -1,9 +1,21 @@
 const cloudscraper = require('cloudscraper')
 const cheerio = require('cheerio')
+const zlib = require('zlib')
 
 class JapScanApiService {
     constructor(scraper) {
         this.scraper = scraper
+
+        this.scraper.defaultParams.headers = {
+            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Cache-Control': 'no-cache',
+            'upgrade-insecure-requests': '1'
+        };
+        this.scraper.defaultParams.gzip = true;
     }
 
     getTotalPages() {
@@ -53,9 +65,6 @@ class JapScanApiService {
     doRequest(method, uri, encoding) {
         let self = this
         let options = {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
-            },
             method,
             uri,
             encoding
@@ -64,7 +73,7 @@ class JapScanApiService {
     }
 
     parseHtml(body) {
-        return cheerio.load(body, { xmlMode: false })
+            return cheerio.load(body, { xmlMode: false, decodeEntities: true })
     }
 
     parseTotalPages($) {
@@ -163,8 +172,8 @@ class JapScanApiService {
     }
 
     parsePages($) {
-        var pagesElements = $('#pages > option:not([data-img^="(IMG__|__sy|__Add).*\.(png|jpe?g)"])')
-        var image = $('#image')
+        let pagesElements = $('#pages > option:not([data-img^="(IMG__|__sy|__Add).*\.(png|jpe?g)"])')
+        let image = $('#image')
         let src = image.data("src")
 
         let isSecuredPage = $('script[src^="/js/iYFbYi_UibMqYb.js"]').length > 0
