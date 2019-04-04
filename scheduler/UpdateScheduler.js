@@ -13,7 +13,7 @@ module.exports = class UpdateScheduler {
         let self = this
         return self.fetchMangas()
             .then(res => {
-                self.mangasSync = schedule.scheduleJob('0 * * * *', self.fetchMangas);
+                self.mangasSync = schedule.scheduleJob('0 0 * * *', self.fetchMangas);
             })
     }
 
