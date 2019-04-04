@@ -36,52 +36,13 @@ router.get('/mangas/:alias/chapters/:number', (req, res, next) => {
 router.get('/images/:manga/:number/:page', (req, res, next) => {
     let image = "/images/" + req.params.manga + "/" + req.params.number + "/" + req.params.page
 
-    if (fs.existsSync(image)) {
-        // Return image from cache
-        fsPromises.readFile(image)
-            .then(body => {
-                res.end(body, 'binary')
-            })
-    } else {
-        // Return immage from japscan website and store there in
-        japScanApiService.getPage(req.params.manga, req.params.number, req.params.page, false)
-            .then(body => {
-                return fs.promises.mkdir(path.dirname(image), { recursive: true })
-                    .then(() => {
-                        return fsPromises.writeFile(image, body)
-                    })
-                    .then(() => body)
-            })
-            .then(body => {
-                res.end(body, 'binary')
-            })
-            .catch(next)
-    }
+    // Return immage from japscan website and store there in
+    japScanApiService.getPage(req.params.manga, req.params.number, req.params.page, false)
+        .then(body => {
+            res.set({'Content-Type': 'image/jpeg'}).end(body, 'binary')
+        })
+        .catch(next)
+
 })
 
-router.get('/images-secured/:manga/:number/:page', (req, res, next) => {
-    let image = "/images/" + req.params.manga + "/" + req.params.number + "/" + req.params.page
-
-    if (fs.existsSync(image)) {
-        // Return image from cache
-        fsPromises.readFile(image)
-            .then(body => {
-                res.end(body, 'binary')
-            })
-    } else {
-        // Return immage from japscan website and store there in
-        japScanApiService.getPage(req.params.manga, req.params.number, req.params.page, true)
-            .then(body => {
-                return fs.promises.mkdir(path.dirname(image), { recursive: true })
-                    .then(() => {
-                        return fsPromises.writeFile(image, body)
-                    })
-                    .then(() => body)
-            })
-            .then(body => {
-                res.end(body, 'binary')
-            })
-            .catch(next)
-    }
-})
 module.exports = router
