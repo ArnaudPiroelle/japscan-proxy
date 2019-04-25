@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "engines": {
-    "node": "11.x"
+    "node": "10.x"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
