@@ -1,21 +1,15 @@
 const cloudscraper = require('cloudscraper')
 const cheerio = require('cheerio')
 const zlib = require('zlib')
+const crypto = require('crypto')
 
 class JapScanApiService {
     constructor(scraper) {
         this.scraper = scraper
-
-        this.scraper.defaultParams.headers = {
-            'Connection': 'keep-alive',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Cache-Control': 'no-cache',
-            'upgrade-insecure-requests': '1'
-        };
-        this.scraper.defaultParams.gzip = true;
+        this.scraper.defaultParams.agentOptions = {
+            // Removes a few problematic TLSv1.0 ciphers to avoid CAPTCHA
+            ciphers: crypto.constants.defaultCipherList + ':!ECDHE+SHA:!AES128-SHA'
+        }
     }
 
     getTotalPages() {
@@ -73,7 +67,7 @@ class JapScanApiService {
     }
 
     parseHtml(body) {
-            return cheerio.load(body, { xmlMode: false, decodeEntities: true })
+        return cheerio.load(body, { xmlMode: false, decodeEntities: true })
     }
 
     parseTotalPages($) {
@@ -183,13 +177,13 @@ class JapScanApiService {
             .map((i, page) => {
                 let imageName = $(page).data('img')
                 let index = imageName.indexOf('?')
-                if (index <= 0){
+                if (index <= 0) {
                     return "/images/" + uri[0] + "/" + uri[1] + "/" + imageName
                 } else {
                     let cleanImageName = imageName.substring(0, index)
                     return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
                 }
-                
+
                 return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
             }).get()
 
