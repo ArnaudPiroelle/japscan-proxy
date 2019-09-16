@@ -13,20 +13,20 @@ class JapScanApiService {
     }
 
     getTotalPages() {
-        return this.doGet('https://www.japscan.to/mangas/1')
+        return this.doGet('https://www.japscan.co/mangas/1')
             .then(this.parseHtml)
             .then(this.parseTotalPages)
     }
 
     getMangas(page) {
         console.log("Fetch manga page " + page)
-        return this.doGet('https://www.japscan.to/mangas/' + page)
+        return this.doGet('https://www.japscan.co/mangas/' + page)
             .then(this.parseHtml)
             .then(this.parseMangas)
     }
 
     getDetails(manga) {
-        return this.doGet('https://www.japscan.to/manga/' + manga + '/')
+        return this.doGet('https://www.japscan.co/manga/' + manga + '/')
             .then(this.parseHtml)
             .then(this.parseDetails)
     }
@@ -34,7 +34,7 @@ class JapScanApiService {
     getChapters(manga) {
         console.log('Fetch chapters for manga ' + manga)
 
-        return this.doGet('https://www.japscan.to/manga/' + manga + '/')
+        return this.doGet('https://www.japscan.co/manga/' + manga + '/')
             .then(this.parseHtml)
             .then(this.parseChapters)
     }
@@ -42,13 +42,13 @@ class JapScanApiService {
     getPages(manga, chapter) {
         console.log('Fetch pages for ' + manga + ' chapter ' + chapter)
 
-        return this.doGet('https://www.japscan.to/lecture-en-ligne/' + manga + '/' + chapter + '/')
+        return this.doGet('https://www.japscan.co/lecture-en-ligne/' + manga + '/' + chapter + '/')
             .then(this.parseHtml)
             .then(this.parsePages)
     }
 
     getPage(manga, chapter, page, secured) {
-        let baseUrl = 'https://c.japscan.to/lel/'
+        let baseUrl = 'https://c.japscan.co/lel/'
         return this.doRequest('GET', baseUrl + manga + "/" + chapter + "/" + page, null)
     }
 
@@ -80,7 +80,7 @@ class JapScanApiService {
             let link = $(manga).children('a[href^="/manga/"]')
             let alias = $(link).attr('href').replace('/manga/', '').replace('/', '')
             //TODO: Change to proxy url
-            let thumbnail = 'https://www.japscan.to' + $(link).children('img').attr('src')
+            let thumbnail = 'https://www.japscan.co' + $(link).children('img').attr('src')
             let name = $(manga).children('p').children('a').text()
 
             return {
@@ -171,7 +171,7 @@ class JapScanApiService {
         let src = image.data("src")
 
         let isSecuredPage = $('script[src^="/js/iYFbYi_UibMqYb.js"]').length > 0
-        let uri = src.replace('https://c.japscan.to/lel/', '').split('/')
+        let uri = src.replace('https://c.japscan.co/lel/', '').split('/')
 
         let pages = pagesElements
             .map((i, page) => {
