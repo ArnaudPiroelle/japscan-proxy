@@ -98,6 +98,7 @@ class JapScanApiService {
         let infosElements = $(page).children('div.d-flex').children('div').children('p')
 
         let validInfos = {}
+        console.log(infosElements.length)
         infosElements.each((i, info) => {
 
             let values = $(info).text()
@@ -106,6 +107,7 @@ class JapScanApiService {
             let infoName = keyvalues[0].trim()
             let infoValue = keyvalues[1].trim()
 
+            console.log(infoName)
             switch (infoName) {
                 case 'Origine':
                     validInfos["origin"] = infoValue
