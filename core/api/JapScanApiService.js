@@ -98,36 +98,42 @@ class JapScanApiService {
         let infosElements = $(page).children('div.d-flex').children('div').children('p')
 
         let validInfos = {}
-        console.log(infosElements.length)
-        infosElements.each((i, info) => {
 
-            let values = $(info).text()
-            let keyvalues = values.split(':')
+        if (infosElements.length == 0) {
+            return { error: $.html() }
+        } else {
+            infosElements.each((i, info) => {
 
-            let infoName = keyvalues[0].trim()
-            let infoValue = keyvalues[1].trim()
+                let values = $(info).text()
+                let keyvalues = values.split(':')
 
-            console.log(infoName)
-            switch (infoName) {
-                case 'Origine':
-                    validInfos["origin"] = infoValue
-                    break
-                case 'Date Sortie':
-                    validInfos["year"] = infoValue
-                    break
-                case 'Type(s)':
-                    validInfos["type"] = infoValue
-                    break
-                case 'Genre(s)':
-                    validInfos["kind"] = infoValue
-                    break
-                case 'Auteur(s)':
-                    validInfos["author"] = infoValue
-                    break
-            }
-        }).get()
+                let infoName = keyvalues[0].trim()
+                let infoValue = keyvalues[1].trim()
 
-        return { ...validInfos, summary }
+                console.log(infoName)
+                switch (infoName) {
+                    case 'Origine':
+                        validInfos["origin"] = infoValue
+                        break
+                    case 'Date Sortie':
+                        validInfos["year"] = infoValue
+                        break
+                    case 'Type(s)':
+                        validInfos["type"] = infoValue
+                        break
+                    case 'Genre(s)':
+                        validInfos["kind"] = infoValue
+                        break
+                    case 'Auteur(s)':
+                        validInfos["author"] = infoValue
+                        break
+                }
+            }).get()
+
+            return { ...validInfos, summary }
+        }
+
+
     }
 
     parseChapters($) {
