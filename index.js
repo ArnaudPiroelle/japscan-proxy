@@ -7,5 +7,6 @@ const PORT = process.env.PORT || 5000
 
 const server = new RestServer(PORT)
 const updateScheduler = new UpdateScheduler()
+
 updateScheduler.registerMangasSync()
 server.start()

@@ -6,7 +6,7 @@ const headers = {
     "Accept-Language": "en-US,en;q=0.8",
     "Accept-Encoding": "gzip, deflate, , br"
 }
-const cloudscraper = require('cloudscraper').defaults({ headers: headers })
+const cloudscraper = require('cloudscraper')
 const cheerio = require('cheerio')
 const zlib = require('zlib')
 const crypto = require('crypto')
