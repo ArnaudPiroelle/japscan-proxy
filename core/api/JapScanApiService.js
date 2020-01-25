@@ -54,9 +54,9 @@ class JapScanApiService {
             .then(this.parsePages)
     }
 
-    getPage(manga, chapter, page, secured) {
-        let baseUrl = 'https://c.japscan.co/lel/'
-        return this.doRequest('GET', baseUrl + manga + "/" + chapter + "/" + page, null)
+    getPage(context, manga, chapter, page, secured) {
+        let baseUrl = 'https://c.japscan.co/'
+        return this.doRequest('GET', baseUrl + context + "/" + manga + "/" + chapter + "/" + page, null)
     }
 
     doGet(url) {
@@ -182,24 +182,12 @@ class JapScanApiService {
 
     parsePages($) {
         let pagesElements = $('#pages > option:not([data-img^="(IMG__|__sy|__Add).*\.(png|jpe?g)"])')
-        let image = $('#image')
-        let src = image.data("src")
-
         let isSecuredPage = $('script[src^="/js/iYFbYi_UibMqYb.js"]').length > 0
-        let uri = src.replace('https://c.japscan.co/lel/', '').split('/')
 
         let pages = pagesElements
             .map((i, page) => {
-                let imageName = $(page).data('img')
-                let index = imageName.indexOf('?')
-                if (index <= 0) {
-                    return "/images/" + uri[0] + "/" + uri[1] + "/" + imageName
-                } else {
-                    let cleanImageName = imageName.substring(0, index)
-                    return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
-                }
-
-                return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
+                let imageName = $(page).data('img').replace('https://c.japscan.co/', '')
+                return "/images/" + imageName
             }).get()
 
         return {

@@ -33,11 +33,9 @@ router.get('/mangas/:alias/chapters/:number', (req, res, next) => {
         .catch(next)
 })
 
-router.get('/images/:manga/:number/:page', (req, res, next) => {
-    let image = "/images/" + req.params.manga + "/" + req.params.number + "/" + req.params.page
-
+router.get('/images/:context/:manga/:number/:page', (req, res, next) => {
     // Return immage from japscan website and store there in
-    japScanApiService.getPage(req.params.manga, req.params.number, req.params.page, false)
+    japScanApiService.getPage(req.params.context, req.params.manga, req.params.number, req.params.page, false)
         .then(body => {
             res.set({'Content-Type': 'image/jpeg'}).end(body, 'binary')
         })
