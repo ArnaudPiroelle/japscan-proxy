@@ -59,6 +59,11 @@ class JapScanApiService {
         return this.doRequest('GET', baseUrl + manga + "/" + chapter + "/" + page, null)
     }
 
+    getThumbnail(image){
+        let baseUrl = 'https://www.japscan.co'
+        return this.doRequest('GET', baseUrl + '/imgs/mangas/' + image, null)
+    }
+
     doGet(url) {
         return this.doRequest('GET', url, 'utf8')
     }
@@ -87,7 +92,7 @@ class JapScanApiService {
             let link = $(manga).children('a[href^="/manga/"]')
             let alias = $(link).attr('href').replace('/manga/', '').replace('/', '')
             //TODO: Change to proxy url
-            let thumbnail = 'https://www.japscan.co' + $(link).children('img').attr('src')
+            let thumbnail = $(link).children('img').attr('src')
             let name = $(manga).children('p').children('a').text()
 
             return {

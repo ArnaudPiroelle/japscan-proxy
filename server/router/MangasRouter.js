@@ -39,10 +39,18 @@ router.get('/images/:manga/:number/:page', (req, res, next) => {
     // Return immage from japscan website and store there in
     japScanApiService.getPage(req.params.manga, req.params.number, req.params.page, false)
         .then(body => {
-            res.set({'Content-Type': 'image/jpeg'}).end(body, 'binary')
+            res.set({ 'Content-Type': 'image/jpeg' }).end(body, 'binary')
         })
         .catch(next)
 
+})
+
+router.get('/imgs/mangas/:image', (req, res, next) => {
+    japScanApiService.getThumbnail(req.params.image)
+        .then(body => {
+            res.set({ 'Content-Type': 'image/jpeg' }).end(body, 'binary')
+        })
+        .catch(next)
 })
 
 module.exports = router
