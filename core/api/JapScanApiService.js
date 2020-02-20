@@ -1,10 +1,10 @@
 const headers = {
     "Connection": "keep-alive",
     "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.8",
-    "Accept-Encoding": "gzip, deflate, , br"
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+    "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br"
 }
 const cloudscraper = require('cloudscraper')
 const cheerio = require('cheerio')
@@ -54,9 +54,9 @@ class JapScanApiService {
             .then(this.parsePages)
     }
 
-    getPage(manga, chapter, page, secured) {
-        let baseUrl = 'https://c.japscan.co/lel/'
-        return this.doRequest('GET', baseUrl + manga + "/" + chapter + "/" + page, null)
+    getPage(context, manga, chapter, page, secured) {
+        let baseUrl = 'https://c.japscan.co/'
+        return this.doRequest('GET', baseUrl + context + "/" + manga + "/" + chapter + "/" + page, null)
     }
 
     getThumbnail(image){
@@ -187,24 +187,12 @@ class JapScanApiService {
 
     parsePages($) {
         let pagesElements = $('#pages > option:not([data-img^="(IMG__|__sy|__Add).*\.(png|jpe?g)"])')
-        let image = $('#image')
-        let src = image.data("src")
-
         let isSecuredPage = $('script[src^="/js/iYFbYi_UibMqYb.js"]').length > 0
-        let uri = src.replace('https://c.japscan.co/lel/', '').split('/')
 
         let pages = pagesElements
             .map((i, page) => {
-                let imageName = $(page).data('img')
-                let index = imageName.indexOf('?')
-                if (index <= 0) {
-                    return "/images/" + uri[0] + "/" + uri[1] + "/" + imageName
-                } else {
-                    let cleanImageName = imageName.substring(0, index)
-                    return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
-                }
-
-                return "/images/" + uri[0] + "/" + uri[1] + "/" + cleanImageName
+                let imageName = $(page).data('img').replace('https://c.japscan.co/', '')
+                return "/images/" + imageName
             }).get()
 
         return {
