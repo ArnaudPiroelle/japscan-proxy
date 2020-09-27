@@ -23,20 +23,20 @@ class JapScanApiService {
     }
 
     getTotalPages() {
-        return this.doGet('https://www.japscan.co/mangas/1')
+        return this.doGet('https://www.japscan.se/mangas/1')
             .then(this.parseHtml)
             .then(this.parseTotalPages)
     }
 
     getMangas(page) {
         console.log("Fetch manga page " + page)
-        return this.doGet('https://www.japscan.co/mangas/' + page)
+        return this.doGet('https://www.japscan.se/mangas/' + page)
             .then(this.parseHtml)
             .then(this.parseMangas)
     }
 
     getDetails(manga) {
-        return this.doGet('https://www.japscan.co/manga/' + manga + '/')
+        return this.doGet('https://www.japscan.se/manga/' + manga + '/')
             .then(this.parseHtml)
             .then(this.parseDetails)
     }
@@ -44,7 +44,7 @@ class JapScanApiService {
     getChapters(manga) {
         console.log('Fetch chapters for manga ' + manga)
 
-        return this.doGet('https://www.japscan.co/manga/' + manga + '/')
+        return this.doGet('https://www.japscan.se/manga/' + manga + '/')
             .then(this.parseHtml)
             .then(this.parseChapters)
     }
@@ -52,7 +52,7 @@ class JapScanApiService {
     getPages(manga, chapter) {
         console.log('Fetch pages for ' + manga + ' chapter ' + chapter)
 
-        const url = 'https://www.japscan.co/lecture-en-ligne/' + manga + '/' + chapter + '/'
+        const url = 'https://www.japscan.se/lecture-en-ligne/' + manga + '/' + chapter + '/'
         return this.loadKeysheet(url)
             .then(() => this.doGet(url))
             .then(this.parseHtml)
@@ -62,12 +62,12 @@ class JapScanApiService {
     }
 
     getPage(context, manga, chapter, page, secured) {
-        let baseUrl = 'https://c.japscan.co/'
+        let baseUrl = 'https://c.japscan.se/'
         return this.doRequest('GET', baseUrl + context + "/" + manga + "/" + chapter + "/" + page, null)
     }
 
     getThumbnail(image) {
-        let baseUrl = 'https://www.japscan.co'
+        let baseUrl = 'https://www.japscan.se'
         return this.doRequest('GET', baseUrl + '/imgs/mangas/' + image, null)
     }
 
@@ -229,7 +229,7 @@ class JapScanApiService {
 
         return pagesElements
             .map((i, page) => {
-                return $(page).data('img').replace('https://c.japscan.co/', '')
+                return $(page).data('img').replace('https://c.japscan.se/', '')
             }).get()
     }
 
@@ -249,7 +249,7 @@ class JapScanApiService {
             .get()
             .map((page) => {
                 console.log(page)
-                var imageNames = page.replace('https://c.japscan.co/', '').split('.')
+                var imageNames = page.replace('https://c.japscan.se/', '').split('.')
                 let imageName = Array.from(imageNames[0]).join("")
 
                 return "/images/" + imageName + "." + imageNames[1]
@@ -284,10 +284,10 @@ class JapScanApiService {
             const pageUrls = []
             page.route('**', route => {
                 const url = route.request().url()
-                if (url.startsWith("https://www.japscan.co/") ||
+                if (url.startsWith("https://www.japscan.se/") ||
                     url.startsWith("https://cdnjs.cloudflare.com")) {
                     route.continue();
-                } else if (url.startsWith("https://c.japscan.co/")) {
+                } else if (url.startsWith("https://c.japscan.se/")) {
                     pageUrls.push(url)
                     route.continue()
                 } else {
