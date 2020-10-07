@@ -122,7 +122,7 @@ class JapScanApiService {
     }
 
     parseTotalPages($) {
-        return 1
+        return parseInt($('#main ul.pagination>li.page-item').last().text().trim())
     }
 
     parseMangas($) {
