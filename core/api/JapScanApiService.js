@@ -122,7 +122,7 @@ class JapScanApiService {
     }
 
     parseTotalPages($) {
-        return parseInt($('#main ul.pagination>li.page-item').last().text().trim())
+        return 1
     }
 
     parseMangas($) {
@@ -284,14 +284,12 @@ class JapScanApiService {
             const pageUrls = []
             page.route('**', route => {
                 const url = route.request().url()
-                if (url.startsWith("https://www.japscan.se/") ||
-                    url.startsWith("https://cdnjs.cloudflare.com")) {
-                    route.continue();
-                } else if (url.startsWith("https://c.japscan.se/")) {
+
+                if (url.startsWith("https://c.japscan.se/")) {
                     pageUrls.push(url)
                     route.continue()
                 } else {
-                    route.abort()
+                    route.continue();
                 }
 
                 if (pageUrls.length == 2) {

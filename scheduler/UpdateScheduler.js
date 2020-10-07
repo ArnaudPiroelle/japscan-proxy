@@ -11,13 +11,8 @@ module.exports = class UpdateScheduler {
 
     registerMangasSync() {
         let self = this
+        self.mangasSync = schedule.scheduleJob('0 * * * *', self.fetchMangas);
         return self.fetchMangas()
-            .then(res =>
-                // retry
-                self.fetchMangas()
-            ).then(res => {
-                self.mangasSync = schedule.scheduleJob('0 * * * *', self.fetchMangas);
-            })
     }
 
     unregisterMangaSync() {
