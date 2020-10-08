@@ -6,13 +6,6 @@ const fs = require('fs')
 const morgan = require('morgan')
 const mangasRouter = require('./router/MangasRouter')
 
-const clientAuthMiddleware = () => (req, res, next) => {
-    if (!req.client.authorized) {
-        return res.status(401).send('Invalid client certificate authentication.');
-    }
-    return next();
-};
-
 module.exports = class RestServer {
     constructor(port, sslFolder) {
         this.port = port
@@ -22,7 +15,6 @@ module.exports = class RestServer {
         this.app.use(helmet())
         this.app.use(compression())
         this.app.use(morgan('combined'))
-        this.app.use(clientAuthMiddleware())
         this.app.use(mangasRouter)
     }
 
@@ -33,7 +25,7 @@ module.exports = class RestServer {
               cert: fs.readFileSync(this.sslFolder + '/server.crt'),
               key: fs.readFileSync(this.sslFolder +'/server.key'),
               requestCert: true,
-              rejectUnauthorized: false,
+              rejectUnauthorized: true,
               ca: fs.readFileSync(this.sslFolder + '/ca.pem'),
         
               // ...
