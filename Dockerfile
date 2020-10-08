@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libepoxy0 \
     libgtk-3-0 \
     libharfbuzz-icu0 \
-    libharfbuzz
+    libharfbuzz0b
 
 # 3. Install gstreamer and plugins to support video playback in WebKit.
 RUN apt-get update && apt-get install -y gstreamer1.0-gl \
