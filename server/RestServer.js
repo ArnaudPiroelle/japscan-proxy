@@ -25,8 +25,8 @@ module.exports = class RestServer {
               // ...
               cert: fs.readFileSync(this.sslFolder + '/server.crt'),
               key: fs.readFileSync(this.sslFolder +'/server.key'),
-              requestCert: true,
-              rejectUnauthorized: true,
+              //requestCert: true,
+              //rejectUnauthorized: true,
               ca: fs.readFileSync(this.sslFolder + '/ca.pem'),
         
               // ...
