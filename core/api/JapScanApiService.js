@@ -23,20 +23,20 @@ class JapScanApiService {
     }
 
     getTotalPages() {
-        return this.doGet('https://www.japscan.se/mangas/1')
+        return this.doGet('https://www.japscan.ws/mangas/1')
             .then(this.parseHtml)
             .then(this.parseTotalPages)
     }
 
     getMangas(page) {
         console.log("Fetch manga page " + page)
-        return this.doGet('https://www.japscan.se/mangas/' + page)
+        return this.doGet('https://www.japscan.ws/mangas/' + page)
             .then(this.parseHtml)
             .then(this.parseMangas)
     }
 
     getDetails(manga) {
-        return this.doGet('https://www.japscan.se/manga/' + manga + '/')
+        return this.doGet('https://www.japscan.ws/manga/' + manga + '/')
             .then(this.parseHtml)
             .then(this.parseDetails)
     }
@@ -44,7 +44,7 @@ class JapScanApiService {
     getChapters(manga) {
         console.log('Fetch chapters for manga ' + manga)
 
-        return this.doGet('https://www.japscan.se/manga/' + manga + '/')
+        return this.doGet('https://www.japscan.ws/manga/' + manga + '/')
             .then(this.parseHtml)
             .then(this.parseChapters)
     }
@@ -52,7 +52,7 @@ class JapScanApiService {
     getPages(manga, chapter) {
         console.log('Fetch pages for ' + manga + ' chapter ' + chapter)
 
-        const url = 'https://www.japscan.se/lecture-en-ligne/' + manga + '/' + chapter + '/'
+        const url = 'https://www.japscan.ws/lecture-en-ligne/' + manga + '/' + chapter + '/'
         return this.loadKeysheet(url)
             .then(() => this.doGet(url))
             .then(this.parseHtml)
@@ -62,12 +62,12 @@ class JapScanApiService {
     }
 
     getPage(context, manga, chapter, page, secured) {
-        let baseUrl = 'https://c.japscan.se/'
+        let baseUrl = 'https://cdn.statically.io/img/c.japscan.ws/'
         return this.doRequest('GET', baseUrl + context + "/" + manga + "/" + chapter + "/" + page, null)
     }
 
     getThumbnail(image) {
-        let baseUrl = 'https://www.japscan.se'
+        let baseUrl = 'https://www.japscan.ws'
         return this.doRequest('GET', baseUrl + '/imgs/mangas/' + image, null)
     }
 
@@ -89,7 +89,6 @@ class JapScanApiService {
 
     async loadKeysheet(chapter) {
         const pages = await this.findDecryptedPages(chapter)
-        console.log(pages)
         this.createKeysheet(pages)
     }
 
@@ -97,15 +96,11 @@ class JapScanApiService {
         var az = "0123456789abcdefghijklmnopqrstuvwxyz".split('')
         var ks = "0123456789abcdefghijklmnopqrstuvwxyz".split('')
 
+        console.log(pages)
+
         const realPageUrls = pages.decryptedUrls
         const pageUrls = pages.encryptedUrls
-
-        console.log(realPageUrls)
-        console.log(pageUrls)
-
         realPageUrls.forEach((realurl, i) => {
-            console.log(i)
-
             realurl.split('').forEach((url, j) => {
                 if (realPageUrls[i][j] != pageUrls[i][j]) {
                     ks[az.indexOf(pageUrls[i][j])] = realPageUrls[i][j]
@@ -114,7 +109,6 @@ class JapScanApiService {
         })
 
         this.keysheet = ks.join("")
-        console.log(this.keysheet)
     }
 
     parseHtml(body) {
@@ -229,7 +223,7 @@ class JapScanApiService {
 
         return pagesElements
             .map((i, page) => {
-                return $(page).data('img').replace('https://c.japscan.se/', '')
+                return $(page).data('img').replace('https://c.japscan.ws/', '')
             }).get()
     }
 
@@ -248,8 +242,7 @@ class JapScanApiService {
             })
             .get()
             .map((page) => {
-                console.log(page)
-                var imageNames = page.replace('https://c.japscan.se/', '').split('.')
+                var imageNames = page.replace('https://c.japscan.ws/', '').split('.')
                 let imageName = Array.from(imageNames[0]).join("")
 
                 return "/images/" + imageName + "." + imageNames[1]
@@ -285,7 +278,7 @@ class JapScanApiService {
             page.route('**', route => {
                 const url = route.request().url()
 
-                if (url.startsWith("https://c.japscan.se/")) {
+                if (url.startsWith("https://cdn.statically.io/img/c.japscan.ws/")) {
                     pageUrls.push(url)
                     route.continue()
                 } else {
@@ -307,8 +300,8 @@ class JapScanApiService {
 
         await browser.close();
         return {
-            encryptedUrls,
-            decryptedUrls
+            encryptedUrls: encryptedUrls.map((url) => url.replace('https://c.japscan.ws/', '')),
+            decryptedUrls: decryptedUrls.map((url) => url.replace('https://cdn.statically.io/img/c.japscan.ws/', ''))
         }
     }
 }
