@@ -38,7 +38,9 @@ class JapScanApiService {
     getDetails(manga) {
         return this.doGet('https://www.japscan.ws/manga/' + manga + '/')
             .then(this.parseHtml)
-            .then(this.parseDetails)
+            .then(html => {
+                return this.parseDetails(html, manga)
+            })
     }
 
     getChapters(manga) {
@@ -136,11 +138,18 @@ class JapScanApiService {
         }).get()
     }
 
-    parseDetails($) {
+    parseDetails($, alias) {
         let page = $('#main>div.card>div.card-body')
+
+        var title = $(page).children('h1').text()
+        let index = title.indexOf(" ")
+        title = title.substr(index + 1)
 
         let summary = $(page).children('p.text-justify').text()
         let infosElements = $(page).children('div.d-flex').children('div').children('p')
+
+        let thumbnail = $(page).children('div.d-flex').children('div').children('img').attr('src')
+        console.log(thumbnail)
 
         let validInfos = {}
 
@@ -155,7 +164,6 @@ class JapScanApiService {
                 let infoName = keyvalues[0].trim()
                 let infoValue = keyvalues[1].trim()
 
-                console.log(infoName)
                 switch (infoName) {
                     case 'Origine':
                         validInfos["origin"] = infoValue
@@ -175,7 +183,7 @@ class JapScanApiService {
                 }
             }).get()
 
-            return { ...validInfos, summary }
+            return { title, alias, thumbnail, ...validInfos, summary }
         }
 
 
